@@ -1,0 +1,253 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-navy-950: #060b16;
+  --color-navy-900: #0b1426;
+  --color-navy-800: #111d36;
+  --color-navy-700: #1a2a4a;
+  --color-navy-600: #25395f;
+
+  --color-gold-200: #f3e7c6;
+  --color-gold-300: #ecd9a8;
+  --color-gold-400: #dcc083;
+  --color-gold-500: #c9a45c;
+  --color-gold-600: #a8843f;
+  --color-gold-700: #86672d;
+
+  --color-ivory: #f7f3ea;
+  --color-ink: #1c2230;
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 38s linear infinite;
+  --animate-spin-slow: spin 28s linear infinite;
+  --animate-spin-slower: spin 60s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shine: shine 3.5s ease-in-out infinite;
+  --animate-gradient: gradient-x 6s ease infinite;
+  --animate-ping-slow: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes shine {
+  0% { transform: translateX(-120%) skewX(-20deg); }
+  60%, 100% { transform: translateX(220%) skewX(-20deg); }
+}
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+:root {
+  /* declarar suporte a tema escuro impede o "modo escuro automático" do Chrome de inverter as cores */
+  color-scheme: dark;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  @apply bg-navy-950 font-sans text-ink antialiased;
+}
+
+::selection {
+  background: var(--color-gold-500);
+  color: var(--color-navy-950);
+}
+
+/* ---------- utilitários ---------- */
+.text-gold-gradient {
+  background: linear-gradient(100deg, #a8843f 0%, #f3e7c6 30%, #c9a45c 55%, #ecd9a8 80%, #a8843f 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-x 6s ease infinite;
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(201, 164, 92, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 164, 92, 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* borda dourada girando (cards de áreas) */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.border-beam {
+  position: relative;
+  isolation: isolate;
+}
+.border-beam::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--angle), transparent 0deg, transparent 250deg, #c9a45c 300deg, #f3e7c6 330deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  animation: rotate-angle 3s linear infinite;
+  z-index: -1;
+}
+.border-beam:hover::before {
+  opacity: 1;
+}
+@keyframes rotate-angle {
+  to { --angle: 360deg; }
+}
+
+/* ---------- balança da justiça ---------- */
+.scale-beam {
+  transform-box: view-box;
+  transform-origin: 200px 104px;
+  animation: beam-swing 6s ease-in-out infinite;
+}
+.scale-pan-left {
+  transform-box: view-box;
+  transform-origin: 72px 104px;
+  animation: pan-counter 6s ease-in-out infinite;
+}
+.scale-pan-right {
+  transform-box: view-box;
+  transform-origin: 328px 104px;
+  animation: pan-counter 6s ease-in-out infinite;
+}
+@keyframes beam-swing {
+  0%, 100% { transform: rotate(-7deg); }
+  50% { transform: rotate(7deg); }
+}
+@keyframes pan-counter {
+  0%, 100% { transform: rotate(7deg); }
+  50% { transform: rotate(-7deg); }
+}
+
+/* ---------- martelo (malhete) ---------- */
+.gavel-arm {
+  transform-box: view-box;
+  transform-origin: 42px 150px;
+  animation: gavel-strike 2.6s cubic-bezier(0.5, 0, 0.3, 1) infinite;
+}
+@keyframes gavel-strike {
+  0% { transform: rotate(-38deg); }
+  55% { transform: rotate(-44deg); }
+  66% { transform: rotate(1deg); }
+  70% { transform: rotate(-4deg); }
+  74% { transform: rotate(0deg); }
+  100% { transform: rotate(-38deg); }
+}
+.gavel-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gavel-ring 2.6s ease-out infinite;
+  opacity: 0;
+}
+.gavel-ring.r2 { animation-delay: 0.12s; }
+.gavel-ring.r3 { animation-delay: 0.24s; }
+@keyframes gavel-ring {
+  0%, 65% { transform: scale(0.2); opacity: 0; }
+  67% { opacity: 0.9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.gavel-block {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: gavel-block 2.6s ease-out infinite;
+}
+@keyframes gavel-block {
+  0%, 65% { transform: scaleY(1); }
+  68% { transform: scaleY(0.9); }
+  74%, 100% { transform: scaleY(1); }
+}
+.gavel-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gavel-spark 2.6s ease-out infinite;
+  opacity: 0;
+}
+@keyframes gavel-spark {
+  0%, 65% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  67% { opacity: 1; }
+  90%, 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1); }
+}
+.impact-shake {
+  animation: impact-shake 2.6s ease-out infinite;
+}
+@keyframes impact-shake {
+  0%, 65%, 80%, 100% { transform: translate(0, 0); }
+  67% { transform: translate(-3px, 2px); }
+  70% { transform: translate(3px, -2px); }
+  73% { transform: translate(-2px, 1px); }
+  76% { transform: translate(1px, 0); }
+}
+
+/* ---------- livro folheando ---------- */
+.book {
+  perspective: 1400px;
+}
+.book-page {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation: page-flip 7s ease-in-out infinite;
+}
+.book-page:nth-child(2) { animation-delay: 1.2s; }
+.book-page:nth-child(3) { animation-delay: 2.4s; }
+@keyframes page-flip {
+  0%, 12% { transform: rotateY(0deg); }
+  45%, 60% { transform: rotateY(-178deg); }
+  92%, 100% { transform: rotateY(0deg); }
+}
+
+/* ---------- palavras da Constituição acendendo com a rolagem ---------- */
+.scroll-word {
+  --t: clamp(0, calc((var(--p) - var(--a)) / var(--s)), 1);
+  opacity: calc(0.12 + var(--t) * 0.88);
+  transform: translateY(calc((1 - var(--t)) * 10px));
+  filter: blur(calc((1 - var(--t)) * 3px));
+}
+
+/* ---------- movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
